@@ -6,7 +6,7 @@ K <- keras::backend()
 
 K$clear_session()
 
-Sys.setenv( "CUDA_VISIBLE_DEVICES" = 3 )
+# Sys.setenv( "CUDA_VISIBLE_DEVICES" = 3 )
 
 useClutteredMnistData <- FALSE
 
@@ -48,7 +48,7 @@ if( useClutteredMnistData )
   Ytrain <- to_categorical( mnist$train$y )
 
   imageSize <- c( 28, 28 )
-  resampledSize <- c( 30, 30 )
+  resampledSize <- c( 64, 64 )
   }
 
 ##############
@@ -59,10 +59,15 @@ if( useClutteredMnistData )
 inputImageSize <- c( imageSize, 1 )
 numberOfLabels <- 10
 
-model <- createSpatialTransformerNetworkModel2D(
+model <- createResNetWithSpatialTransformerNetworkModel2D(
   inputImageSize = inputImageSize,
   resampledSize = resampledSize,
   numberOfClassificationLabels = numberOfLabels )
+
+# model <- createSimpleClassificationWithSpatialTransformerNetworkModel2D(
+#   inputImageSize = inputImageSize,
+#   resampledSize = resampledSize,
+#   numberOfClassificationLabels = numberOfLabels )
 
 model %>% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),
