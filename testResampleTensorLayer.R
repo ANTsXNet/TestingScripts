@@ -16,7 +16,7 @@ f <- array( data = f, dim = c( 1, dim( f ) ) )
 
 ft <- layer_input( batch_shape = dim( f ) )
 
-shape = c( 700, 700 )
+shape <- c( 700, 700 )
 
 types <- c( 'nearestNeighbor', 'linear', 'cubic' )
 for( i in seq_len( length( types ) ) )
