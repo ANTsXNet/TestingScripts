@@ -25,5 +25,5 @@ ganModel <- VanillaGanModel$new(
    latentDimension = 100 )
 
 ganModel$train( x, numberOfEpochs = 30000, sampleInterval = 100,
-  sampleFilePrefix = "/Users/ntustison/Desktop/SampleImages/sample" )
+  sampleFilePrefix = "./VanillaGanSampleImages/sample" )
 
