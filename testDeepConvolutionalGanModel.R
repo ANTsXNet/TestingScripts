@@ -24,8 +24,6 @@ ganModel <- DeepConvolutionalGanModel$new(
    inputImageSize = inputImageSize,
    latentDimension = 100 )
 
-ganModel$generator$get_layer( "sequential_2" )
-
 ganModel$train( x, numberOfEpochs = 4000, batchSize = 32,
   sampleInterval = 100,
   sampleFilePrefix = "./DCGanSampleImages/sample" )
