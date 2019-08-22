@@ -20,11 +20,11 @@ numberOfClusters <- length( unique( mnist$train$y ) )
 
 # Instantiate and train the GAN model
 
-ganModel <- DeepConvolutionalGanModel$new(
+ganModel <- WassersteinGanModel$new(
    inputImageSize = inputImageSize,
    latentDimension = 100 )
 
-ganModel$train( x, numberOfEpochs = 4000, batchSize = 32,
+ganModel$train( x, numberOfEpochs = 4000, batchSize = 128,
   sampleInterval = 100,
-  sampleFilePrefix = "./DCGanSampleImages/sample" )
+  sampleFilePrefix = "./WGanSampleImages/sample" )
 
