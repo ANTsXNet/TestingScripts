@@ -18,9 +18,8 @@ download.file(
 f <- antsImageRead( bikeFile )
 f <- as.array( f )
 f <- aperm( f, c( 3, 2, 1 ) )
-f <- array( data = f, dim = c( 1, dim( f ) ) )
 
-ft <- layer_input( batch_shape = dim( f ) )
+ft <- layer_input( shape = dim( f ) )
 
 shape <- c( 700, 700 )
 
@@ -29,7 +28,8 @@ for( i in seq_len( length( types ) ) )
   {
   output <- layer_resample_tensor_2d( ft, shape, types[i] )
   model <- keras_model( inputs = ft, outputs = output )
-  outputImage <- drop( model %>% predict( f ) )
+  batchX <- array( data = f, dim = c( 1, dim( f ) ) )
+  outputImage <- drop( model %>% predict( batchX ) )
 
   # Rescale from [0, 1]
   ys <- ( outputImage - min( outputImage ) ) /
@@ -48,10 +48,9 @@ brainFile <- getANTsRData( "ch2b" )
 
 f <- antsImageRead( brainFile )
 f <- as.array( f )
-f <- aperm( f, c( 3, 2, 1 ) )
-f <- array( data = f, dim = c( 1, dim( f ), 1 ) )
+f <- array( data = f, dim = c( dim( f ), 1 ) )
 
-ft <- layer_input( batch_shape = dim( f ) )
+ft <- layer_input( shape = dim( f ) )
 
 shape <- c( 200, 200, 200 )
 
@@ -60,7 +59,8 @@ for( i in seq_len( length( types ) ) )
   {
   output <- layer_resample_tensor_3d( ft, shape, types[i] )
   model <- keras_model( inputs = ft, outputs = output )
-  outputArray <- drop( model %>% predict( f ) )
+  batchX <- array( data = f, dim = c( 1, dim( f ) ) )
+  outputArray <- drop( model %>% predict( batchX ) )
 
   # we skip calculating the correct header info as it's not
   # important for demonstrating functionality.
