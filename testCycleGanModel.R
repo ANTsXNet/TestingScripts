@@ -12,7 +12,7 @@ if( ! dir.exists( dataDirectory ) )
   {
   zippedFile <- tempfile( pattern = dataset, fileext = ".zip" )
 
-  if( file.exists( zippedFile ) )
+  if( ! file.exists( zippedFile ) )
     {
     download.file(
       url = paste0( "https://people.eecs.berkeley.edu/~taesung_park/CycleGAN/datasets/", dataset, ".zip" ),
