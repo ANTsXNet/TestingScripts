@@ -24,7 +24,7 @@ ganModel <- ImprovedWassersteinGanModel$new(
    inputImageSize = inputImageSize,
    latentDimension = 100 )
 
-ganModel$train( x, numberOfEpochs = 4000, batchSize = 32,
+ganModel$train( x, numberOfEpochs = 30000, batchSize = 32,
   sampleInterval = 100,
   sampleFilePrefix = "./WGanGpSampleImages/sample" )
 
