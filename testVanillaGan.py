@@ -14,9 +14,10 @@ K.clear_session()
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 number_of_training_data = len(y_train)
-input_image_size = (28, 28)
+input_image_size = (28, 28, 1)
 
 x = x_train / 127.5 - 1.0
+x = np.expand_dims(x, axis=-1)
 y = y_train
 
 number_of_clusters = len( np.unique( y ) )
@@ -27,5 +28,5 @@ gan_model = antspynet.VanillaGanModel(
    input_image_size=input_image_size, latent_dimension=100)
 
 gan_model.train(x, number_of_epochs=30000, sample_interval=100,
-  sample_file_prefix="/Users/ntustison/Desktop/SampleImages/sample" )
+  sample_file_prefix="./VanillaGanSampleImages_Py/sample" )
 
