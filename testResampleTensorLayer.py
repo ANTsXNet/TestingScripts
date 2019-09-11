@@ -36,7 +36,7 @@ shape = (700, 700)
 
 types = ['nearest_neighbor', 'linear', 'cubic']
 for i in range(len(types)):
-    output = antspynet.ResamplingLayer2D(shape, types[i])(ft)
+    output = antspynet.ResampleTensorLayer2D(shape, types[i])(ft)
     model = Model(inputs=ft, outputs=output)
     batchX = np.expand_dims(f, axis = 0)
     output_image = model.predict(batchX)
@@ -58,7 +58,7 @@ ft = Input(shape=f.shape)
 
 types = ['nearest_neighbor', 'linear', 'cubic']
 for i in range(len(types)):
-    output = antspynet.ResamplingLayer3D(shape, types[i])(ft)
+    output = antspynet.ResampleTensorLayer3D(shape, types[i])(ft)
     model = Model(inputs=ft, outputs=output)
     batchX = np.expand_dims(f, axis = 0)
     output_image = ants.from_numpy(np.squeeze(model.predict(batchX)))
