@@ -26,7 +26,7 @@ if not os.path.exists(data_directory):
     with zipfile.ZipFile(zipped_file.name, 'r') as zip_ref:
         zip_ref.extractall(os.getcwd())
 
-input_image_size = (256, 256, 3)
+input_image_size = (128, 128, 3)
 
 gan_model = antspynet.CycleGanModel(input_image_size=input_image_size)
 
@@ -37,6 +37,7 @@ X_trainA = np.zeros(shape=(number_of_trainingA_files, *input_image_size))
 
 for i in range(number_of_trainingA_files):
    image = cv2.imread(trainingA_files[i])
+   image = cv2.resize(image, input_image_size[:2])
    image = image / 127.5 - 1.0
    X_trainA[i,:,:,:] = image
 
@@ -50,6 +51,7 @@ X_trainB = np.zeros(shape=(number_of_trainingB_files, *input_image_size))
 
 for i in range(number_of_trainingB_files):
    image = cv2.imread(trainingB_files[i])
+   image = cv2.resize(image, input_image_size[:2])
    image = image / 127.5 - 1.0
    X_trainB[i,:,:,:] = image
 
