@@ -21,7 +21,7 @@ if( ! dir.exists( dataDirectory ) )
     }
   }
 
-inputImageSize <- c( 256, 256, 3 )
+inputImageSize <- c( 128, 128, 3 )
 
 ganModel <- CycleGanModel$new(
    inputImageSize = inputImageSize )
@@ -35,7 +35,8 @@ pb <- txtProgressBar( min = 0, max = length( trainingFilesA ), style = 3 )
 
 for( i in seq_len( numberOfTrainingAFiles ) )
   {
-  image <- image_data( image_read( trainingFilesA[i] ) )
+  image <- image_read( trainingFilesA[i] )
+  image <- image_data( image_scale( image, "128x128" ) )
   image <- as.double( aperm( image, c( 3, 2, 1 ) ) )
   image <- image / 127.5 - 1.0
   X_trainA[i,,,] <- as.double( image )
@@ -51,7 +52,8 @@ X_trainB <- array( data = 0, dim = c( numberOfTrainingBFiles, inputImageSize ) )
 pb <- txtProgressBar( min = 0, max = length( trainingFilesB ), style = 3 )
 for( i in seq_len( numberOfTrainingBFiles ) )
   {
-  image <- image_data( image_read( trainingFilesB[i] ) )
+  image <- image_read( trainingFilesB[i] )
+  image <- image_data( image_scale( image, "128x128" ) )
   image <- as.double( aperm( image, c( 3, 2, 1 ) ) )
   image <- image / 127.5 - 1.0
   X_trainB[i,,,] <- image
