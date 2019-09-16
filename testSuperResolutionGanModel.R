@@ -23,7 +23,7 @@ if( ! dir.exists( dataDirectory ) )
 
 
 scaleFactor <- 4
-highResolutionImageSize <- c( 224, 224, 3 )
+highResolutionImageSize <- c( 256, 256, 3 )
 lowResolutionImageSize <- c( as.integer( highResolutionImageSize[1] / scaleFactor ),
                              as.integer( highResolutionImageSize[2] / scaleFactor ),
                              3 )
@@ -45,7 +45,7 @@ for( i in seq_len( numberOfTrainingAFiles ) )
   {
   # high resolution
   image <- image_read( trainingFilesA[i] )
-  image <- image_data( image_scale( image, "224x224" ) )
+  image <- image_data( image_scale( image, "256x256" ) )
   image <- as.double( aperm( image, c( 3, 2, 1 ) ) )
   image <- image / 127.5 - 1.0
   X_trainHighResolution[i,,,] <- as.double( image )
@@ -63,6 +63,6 @@ cat( "\nDone.\n\n" )
 
 
 ganModel$train( X_trainLowResolution, X_trainHighResolution,
-  numberOfEpochs = 200, batchSize = 4, sampleInterval = 1,
+  numberOfEpochs = 200, batchSize = 4, sampleInterval = 25,
   sampleFilePrefix = "./SuperResolutionGanSampleImages/sample" )
 
