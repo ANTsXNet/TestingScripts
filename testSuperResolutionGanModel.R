@@ -30,7 +30,7 @@ lowResolutionImageSize <- c( as.integer( highResolutionImageSize[1] / scaleFacto
 
 ganModel <- SuperResolutionGanModel$new(
    lowResolutionImageSize = lowResolutionImageSize,
-   scaleFactor = scaleFactor )
+   scaleFactor = scaleFactor, useImageNetWeights = TRUE )
 
 cat( "Reading training set A files.\n" )
 trainingFilesA <- list.files( paste0( dataDirectory, '/trainA/' ),
@@ -52,7 +52,7 @@ for( i in seq_len( numberOfTrainingAFiles ) )
 
   # low resolution
   image <- image_read( trainingFilesA[i] )
-  image <- image_data( image_scale( image, "56x56" ) )
+  image <- image_data( image_scale( image, "64x64" ) )
   image <- as.double( aperm( image, c( 3, 2, 1 ) ) )
   image <- image / 127.5 - 1.0
   X_trainLowResolution[i,,,] <- as.double( image )
