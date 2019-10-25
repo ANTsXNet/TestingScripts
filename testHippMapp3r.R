@@ -6,6 +6,13 @@ imageFile <- "head.nii.gz"
 download.file( url, imageFile )
 image <- antsImageRead( imageFile )
 
+#########################################
+#
+# Perform initial (stage 1) segmentation
+#
+
+shapeInitialStage <- c( 160, 160, 128 )
+
 imageN4 <- n4BiasFieldCorrection( image )
 
 # Threshold at 10th percentile of non-zero voxels in "robust range (fslmaths)"
@@ -35,10 +42,10 @@ antsImageWrite( imageNormalized, "imageNormalized.nii.gz" )
 #   thresholdedMask, strideLength = strides, domainImageIsMask = TRUE )
 
 # Resample image
-imageResampled <- resampleImage( imageNormalized, c( 160, 160, 128 ),
+imageResampled <- resampleImage( imageNormalized, shapeInitialStage,
   useVoxels = TRUE, interpType = "linear" )
 
-modelInitialStage <- createHippMapp3rUnetModel3D( list( 160, 160, 128, 1 ), doFirstNetwork = TRUE )
+modelInitialStage <- createHippMapp3rUnetModel3D( c( shapeInitialStage, 1 ), doFirstNetwork = TRUE )
 modelInitialStage$load_weights( getPretrainedNetwork( "hippMapp3rInitial" ) )
 
 dataInitialStage <- array( data = as.array( imageResampled ), dim = c( 1, dim( imageResampled ), 1 ) )
@@ -51,4 +58,41 @@ maskImage[maskImage < 0.5] <- 0
 antsImageWrite( maskImage, "maskInitialStage.nii.gz" )
 
 
+#########################################
+#
+# Perform initial (stage 2) segmentation
+#
 
+shapeRefineStage <- c( 112, 112, 64 )
+
+maskArray <- drop( maskArray )
+centroidIndices <- which( maskArray == 1, arr.ind = TRUE, useNames = FALSE )
+centroid <- rep( 0, 3 )
+centroid[1] <- mean( centroidIndices[, 1] )
+centroid[2] <- mean( centroidIndices[, 2] )
+centroid[3] <- mean( centroidIndices[, 3] )
+lower <- floor( centroid - 0.5 * shapeRefineStage )
+upper <- lower + shapeRefineStage - 1
+
+maskTrimmed <- cropIndices( maskImageResampled, lower, upper )
+imageTrimmed <- cropIndices( imageResampled, lower, upper )
+
+modelRefineStage <- createHippMapp3rUnetModel3D( c( shapeRefineStage, 1 ), FALSE )
+modelRefineStage$load_weights( getPretrainedNetwork( "hippMapp3rRefine" ) )
+
+dataRefineStage <- array( data = as.array( imageTrimmed ), dim = c( 1, shapeRefineStage, 1 ) )
+
+numberOfMCIterations <- 30
+predictionRefineStage <- array( data = 0, dim = c( numberOfMCIterations, shapeRefineStage ) )
+for( i in seq_len( numberOfMCIterations ) )
+  {
+  cat( "        Doing monte carlo iteration", i, "out of", numberOfMCIterations, "\n" )
+  predictionRefineStage[i,,,] <- modelRefineStage$predict( dataRefineStage )[1,,,,1]
+  }
+predictionRefineStage <- apply( predictionRefineStage, c( 2, 3, 4 ), mean )
+
+predictionRefineStageArray <- array( data = 0, dim = dim( imageResampled ) )
+predictionRefineStageArray[lower[1]:upper[1],lower[2]:upper[2],lower[3]:upper[3]] <- predictionRefineStage
+probabilityMaskRefineStageResampled <- as.antsImage( predictionRefineStageArray ) %>% antsCopyImageInfo2( imageResampled )
+probabilityMaskRefineStage <- resampleImageToTarget( probabilityMaskRefineStageResampled, image )
+antsImageWrite( probabilityMaskRefineStage, "probabilityRefineMask.nii.gz" )
