@@ -51,6 +51,7 @@ image_resampled = ants.resample_image(thresholded_image, (256, 256, 256), True)
 batchX = np.expand_dims(image_resampled.numpy(), axis=0)
 batchX = np.expand_dims(batchX, axis=-1)
 
+print("Prediction and write to disk.")
 brain_mask_array = model.predict(batchX, verbose=0)
 brain_mask_resampled = ants.from_numpy(np.squeeze(brain_mask_array[0,:,:,:,0]),
           origin=image_resampled.origin, spacing=image_resampled.spacing,
