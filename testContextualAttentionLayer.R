@@ -33,7 +33,7 @@ ft <- layer_input( batch_shape = dim( f ) )
 bt <- layer_input( batch_shape = dim( b ) )
 
 output <- layer_contextual_attention_2d( list( ft, bt ), kernelSize = 3L,
-           stride = 1L, dilationRate = 2L, fusionKernelSize = 0L )
+           stride = 1L, dilationRate = 2L, fusionKernelSize = 3L )
 
 model <- keras_model( inputs = list( ft, bt ), outputs = output )
 
