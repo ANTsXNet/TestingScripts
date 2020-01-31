@@ -1,6 +1,7 @@
 library( keras )
 library( ANTsRNet )
 library( reticulate )
+library( ANTsR )
 
 K <- keras::backend()
 

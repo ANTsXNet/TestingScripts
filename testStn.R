@@ -59,15 +59,15 @@ if( useClutteredMnistData )
 inputImageSize <- c( imageSize, 1 )
 numberOfLabels <- 10
 
-model <- createResNetWithSpatialTransformerNetworkModel2D(
+# model <- createResNetWithSpatialTransformerNetworkModel2D(
+#   inputImageSize = inputImageSize,
+#   resampledSize = resampledSize,
+#    numberOfClassificationLabels = numberOfLabels )
+
+model <- createSimpleClassificationWithSpatialTransformerNetworkModel2D(
   inputImageSize = inputImageSize,
   resampledSize = resampledSize,
   numberOfClassificationLabels = numberOfLabels )
-
-# model <- createSimpleClassificationWithSpatialTransformerNetworkModel2D(
-#   inputImageSize = inputImageSize,
-#   resampledSize = resampledSize,
-#   numberOfClassificationLabels = numberOfLabels )
 
 model %>% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),
