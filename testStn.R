@@ -1,11 +1,13 @@
 library( keras )
 library( ANTsRNet )
 library( reticulate )
+library( tensorflow )
 
 K <- keras::backend()
-
 K$clear_session()
 
+tf$compat$v1$disable_eager_execution()
+# tf$compat$v1$reset_default_graph()
 # Sys.setenv( "CUDA_VISIBLE_DEVICES" = 3 )
 
 useClutteredMnistData <- FALSE
