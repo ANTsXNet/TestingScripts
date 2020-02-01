@@ -1,5 +1,10 @@
 library( keras )
 library( ANTsRNet )
+library( tensorflow )
+library( ANTsR )
+
+
+tf$compat$v1$disable_eager_execution()
 
 keras::backend()$clear_session()
 
