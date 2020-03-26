@@ -1,5 +1,6 @@
 library( keras )
 library( ANTsRNet )
+library( ANTsR )
 
 keras::backend()$clear_session()
 

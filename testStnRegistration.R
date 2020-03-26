@@ -1,6 +1,7 @@
 library( keras )
 library( ANTsRNet )
 library( reticulate )
+library( ANTsR )
 
 K <- keras::backend()
 
@@ -26,20 +27,16 @@ create_layer( SpatialTransformerLayer2D, objects,
     )
 }
 
-img = ri( 1 ) %>% resampleImage( 2 )
-img2 = ri( 5 ) %>% resampleImage( 8 )
+img = ri( 1 ) %>% resampleImage( c(4,4) ) %>% iMath("Normalize")
+img2 = ri( 5 ) %>% resampleImage( c(4,4) ) %>% iMath("Normalize")
 resampledSize <- dim( img2 )
 inputImageSize = c( dim( img ),  1 )
 inputs <- layer_input(shape = inputImageSize)
 localization <- inputs
-localization <- localization %>% layer_max_pooling_2d(pool_size = c(2,
-    2))
-localization <- localization %>% layer_conv_2d(filters = 20,
-    kernel_size = c(5, 5))
-localization <- localization %>% layer_max_pooling_2d(pool_size = c(2,
-    2))
-localization <- localization %>% layer_conv_2d(filters = 20,
-    kernel_size = c(5, 5))
+localization <- localization %>% layer_max_pooling_2d(pool_size = c(2,2))
+localization <- localization %>% layer_conv_2d(filters = 128,kernel_size = c(5, 5))
+localization <- localization %>% layer_max_pooling_2d(pool_size = c(2,2))
+localization <- localization %>% layer_conv_2d(filters = 128,kernel_size = c(5, 5))
 localization <- localization %>% layer_flatten()
 localization <- localization %>% layer_dense(units = 50L)
 localization <- localization %>% layer_activation_relu()
@@ -51,16 +48,19 @@ outputs <-  layer_spatial_transformer_2d(list(inputs, localization),
 
 stnModel <- keras_model(inputs = inputs, outputs = outputs)
 
-X = array( as.array( img ), dim = inputImageSize )
-Y = array( as.array( img2 ), dim = c( resampledSize, 1 ) )
+X = array( as.array( img ), dim = c(1,inputImageSize ) )
+Y = array( as.array( img2 ), dim = c( 1,resampledSize, 1 ) )
 
 stnModel %>% compile(
   loss = 'mse',
-  optimizer = optimizer_rmsprop()
+  optimizer = optimizer_adam( lr = 1e-4 )
 )
 
 history <- stnModel %>% fit(
   X, Y,  epochs = 30, batch_size = 1 )
+
+stnParamModel <- keras_model( stnModel$input, localization )
+learnedWeights <- predict( stnParamModel, X )
 
 # after this we get out the learned weights from the stnModel and compare to:
 trueReg = antsRegistration( img, img2, "Translation" )

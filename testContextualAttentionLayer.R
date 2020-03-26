@@ -31,14 +31,11 @@ ft <- layer_input( shape = dim( f ) )
 bt <- layer_input( shape = dim( b ) )
 
 output <- layer_contextual_attention_2d( list( ft, bt ), kernelSize = 3L,
-           stride = 1L, dilationRate = 2L, fusionKernelSize = 0L )
+           stride = 1L, dilationRate = 2L, fusionKernelSize = 3L )
 
 model <- keras_model( inputs = list( ft, bt ), outputs = output )
 
-fe <- array( data = f, dim = c( 1, dim( f ) ) )
-be <- array( data = f, dim = c( 1, dim( b ) ) )
-
-outputImage <- model %>% predict( list( fe, be ) )
+outputImage <- model %>% predict( list( f, b ), batch_size = 1 )
 outputImage <- drop( outputImage )
 
 ys <- ( outputImage - min( outputImage ) ) / ( max( outputImage ) - min( outputImage ) )

@@ -1,11 +1,13 @@
 library( keras )
 library( ANTsRNet )
 library( reticulate )
+library( tensorflow )
 
 K <- keras::backend()
-
 K$clear_session()
 
+tf$compat$v1$disable_eager_execution()
+# tf$compat$v1$reset_default_graph()
 # Sys.setenv( "CUDA_VISIBLE_DEVICES" = 3 )
 
 useClutteredMnistData <- FALSE
@@ -59,15 +61,15 @@ if( useClutteredMnistData )
 inputImageSize <- c( imageSize, 1 )
 numberOfLabels <- 10
 
-model <- createResNetWithSpatialTransformerNetworkModel2D(
+# model <- createResNetWithSpatialTransformerNetworkModel2D(
+#   inputImageSize = inputImageSize,
+#   resampledSize = resampledSize,
+#    numberOfClassificationLabels = numberOfLabels )
+
+model <- createSimpleClassificationWithSpatialTransformerNetworkModel2D(
   inputImageSize = inputImageSize,
   resampledSize = resampledSize,
   numberOfClassificationLabels = numberOfLabels )
-
-# model <- createSimpleClassificationWithSpatialTransformerNetworkModel2D(
-#   inputImageSize = inputImageSize,
-#   resampledSize = resampledSize,
-#   numberOfClassificationLabels = numberOfLabels )
 
 model %>% compile( loss = 'categorical_crossentropy',
   optimizer = optimizer_adam( lr = 0.0001 ),
