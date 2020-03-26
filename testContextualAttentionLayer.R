@@ -17,7 +17,6 @@ bChannels[[3]] <- resampleImage( bChannels[[3]], c( 128, 128 ), useVoxel = TRUE,
 b <- mergeChannels( bChannels )
 b <- as.array( b )
 b <- aperm( b, c( 3, 2, 1 ) )
-b <- array( data = b, dim = c( 1, dim( b ) ) )
 
 bikeFile <- tempfile( pattern = "bike", fileext = ".jpg" )
 download.file(
@@ -27,17 +26,19 @@ download.file(
 f <- antsImageRead( bikeFile )
 f <- as.array( f )
 f <- aperm( f, c( 3, 2, 1 ) )
-f <- array( data = f, dim = c( 1, dim( f ) ) )
 
-ft <- layer_input( batch_shape = dim( f ) )
-bt <- layer_input( batch_shape = dim( b ) )
+ft <- layer_input( shape = dim( f ) )
+bt <- layer_input( shape = dim( b ) )
 
 output <- layer_contextual_attention_2d( list( ft, bt ), kernelSize = 3L,
            stride = 1L, dilationRate = 2L, fusionKernelSize = 0L )
 
 model <- keras_model( inputs = list( ft, bt ), outputs = output )
 
-outputImage <- model %>% predict( list( f, b ) )
+fe <- array( data = f, dim = c( 1, dim( f ) ) )
+be <- array( data = f, dim = c( 1, dim( b ) ) )
+
+outputImage <- model %>% predict( list( fe, be ) )
 outputImage <- drop( outputImage )
 
 ys <- ( outputImage - min( outputImage ) ) / ( max( outputImage ) - min( outputImage ) )
