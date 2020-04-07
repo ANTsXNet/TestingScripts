@@ -27,7 +27,7 @@ imageArray <- as.array( imageN4 )
 imageRobustRange <- quantile( imageArray[which( imageArray != 0 )], probs = c( 0.02, 0.98 ) )
 thresholdValue <- 0.10 * ( imageRobustRange[2] - imageRobustRange[1] ) + imageRobustRange[1]
 thresholdedMask <- thresholdImage( imageN4, -10000, thresholdValue, 0, 1 )
-thresholdedImage <- image * thresholdedMask
+thresholdedImage <- imageN4 * thresholdedMask
 
 # Standardize image
 cat( "    Initial step 3: standardize." )
@@ -71,7 +71,7 @@ antsImageWrite( maskImage, "maskInitialStage.nii.gz" )
 
 #########################################
 #
-# Perform initial (stage 2) segmentation
+# Perform refined (stage 2) segmentation
 #
 
 cat( "\n" )

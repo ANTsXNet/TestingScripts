@@ -2,6 +2,9 @@ library( keras )
 library( ANTsRNet )
 library( magick )
 library( ANTsR )
+library( tensorflow )
+
+tf$compat$v1$disable_eager_execution()
 
 keras::backend()$clear_session()
 
