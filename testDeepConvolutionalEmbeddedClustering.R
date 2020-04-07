@@ -34,9 +34,9 @@ if( ! file.exists( modelWeightsFile ) )
   {
   dcecModel$pretrain( x = x, optimizer = 'adam',
     epochs = pretrainEpochs, batchSize = pretrainBatchSize )
-  save_model_weights_hdf5( decModel$autoencoder, modelWeightsFile )
+  save_model_weights_hdf5( dcecModel$autoencoder, modelWeightsFile )
   } else {
-  load_model_weights_hdf5( decModel$autoencoder, modelWeightsFile )
+  load_model_weights_hdf5( dcecModel$autoencoder, modelWeightsFile )
   }
 
 dcecModel$compile( optimizer = 'adam', loss = c( 'kld', 'mse' ), loss_weights = c( 0.1, 1 ) )
