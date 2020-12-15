@@ -19,7 +19,8 @@ f <- antsImageRead( bikeFile )
 f <- as.array( f )
 f <- aperm( f, c( 3, 2, 1 ) )
 
-ft <- layer_input( shape = dim( f ) )
+# ft <- layer_input( shape = dim( f ) )
+ft <- layer_input( shape = list( NULL, NULL, 3 ) )
 
 shape <- c( 700, 700 )
 

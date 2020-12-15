@@ -16,33 +16,33 @@ import antspynet
 #
 
 
-# url = "https://user-images.githubusercontent.com/22609465/36634042-4168652a-1964-11e8-90a9-2c480b97eff7.jpg"
-# r = requests.get(url)
+url = "https://user-images.githubusercontent.com/22609465/36634042-4168652a-1964-11e8-90a9-2c480b97eff7.jpg"
+r = requests.get(url)
 
-# temp_directory = tempfile.TemporaryDirectory()
-# target_file = tempfile.NamedTemporaryFile(suffix=".jpg", dir=temp_directory.name)
-# target_file.close()
-# target_file_name = target_file.name
+temp_directory = tempfile.TemporaryDirectory()
+target_file = tempfile.NamedTemporaryFile(suffix=".jpg", dir=temp_directory.name)
+target_file.close()
+target_file_name = target_file.name
 
-# if not path.exists(target_file_name):
-#     r = requests.get(url)
-#     with open(target_file_name, 'wb') as f:
-#         f.write(r.content)
+if not path.exists(target_file_name):
+    r = requests.get(url)
+    with open(target_file_name, 'wb') as f:
+        f.write(r.content)
 
-# f = cv2.imread(target_file_name)
+f = cv2.imread(target_file_name)
 
-# ft = Input(shape=(None, None, 3))
-# # ft = Input(shape=f.shape)
+ft = Input(shape=(None, None, 3))
+# ft = Input(shape=f.shape)
 
-# shape = (700, 700)
+shape = (700, 700)
 
-# types = ['nearest_neighbor', 'linear', 'cubic']
-# for i in range(len(types)):
-#     output = antspynet.ResampleTensorLayer2D(shape, types[i])(ft)
-#     model = Model(inputs=ft, outputs=output)
-#     batchX = np.expand_dims(f, axis = 0)
-#     output_image = model.predict(batchX)
-#     cv2.imwrite("out2D_" + types[i] + ".jpg", output_image[0])
+types = ['nearest_neighbor', 'linear', 'cubic']
+for i in range(len(types)):
+    output = antspynet.ResampleTensorLayer2D(shape, types[i])(ft)
+    model = Model(inputs=ft, outputs=output)
+    batchX = np.expand_dims(f, axis = 0)
+    output_image = model.predict(batchX)
+    cv2.imwrite("out2D_" + types[i] + ".jpg", output_image[0])
 
 
 ####
