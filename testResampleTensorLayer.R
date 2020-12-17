@@ -52,8 +52,8 @@ f <- antsImageRead( brainFile )
 f <- as.array( f )
 f <- array( data = f, dim = c( dim( f ), 1 ) )
 
-ft <- layer_input( shape = dim( f ) )
-# ft <- layer_input( shape = list( NULL, NULL, NULL, 1 ) )
+# ft <- layer_input( shape = dim( f ) )
+ft <- layer_input( shape = list( NULL, NULL, NULL, 1 ) )
 
 shape <- c( 100, 110, 120 )
 
