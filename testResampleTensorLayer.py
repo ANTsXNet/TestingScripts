@@ -41,8 +41,31 @@ for i in range(len(types)):
     model = Model(inputs=ft, outputs=output)
     batchX = np.expand_dims(f, axis = 0)
     output_image = model.predict(batchX)
-    cv2.imwrite("out2D_" + types[i] + ".jpg", output_image[0])
+    cv2.imwrite("out2D_" + types[i] + "_py.jpg", output_image[0])
 
+####
+#
+#  Brian's variant
+#
+
+ft = Input(shape=(None, None, 3))
+
+target_shape = (600, 700)
+
+source = Input(shape = (None, None, 3))
+target = Input(shape = (None, None, 3))
+
+source_array = np.expand_dims(f, axis = 0)
+target_array = np.zeros((1, *target_shape, 3))
+
+types = ['nearest_neighbor', 'linear', 'cubic']
+for i in range(len(types)):
+    print("Doing Brian's 2-D " + types[i])
+    output = antspynet.ResampleTensorToTargetTensorLayer2D(types[i])([source, target])
+    model = Model(inputs=[source, target], outputs=output)
+    batchX = np.expand_dims(f, axis = 0)
+    output_image = model.predict([source_array, target_array])
+    cv2.imwrite("out2D_brian_" + types[i] + "_py.jpg", output_image[0])
 
 ####
 #
@@ -66,4 +89,24 @@ for i in range(len(types)):
     output_image = ants.from_numpy(np.squeeze(model.predict(batchX)))
     ants.image_write(output_image, "out3D_py_" + types[i] + ".nii.gz")
 
+####
+#
+#  Brian's variant
+#
+
+target_shape = (100, 110, 120)
+
+source = Input(shape = (None, None, None, 1))
+target = Input(shape = (None, None, None, 1))
+
+source_array = np.expand_dims(f, axis = 0)
+target_array = np.zeros((1, *target_shape, 1))
+
+types = ['nearest_neighbor', 'linear', 'cubic']
+for i in range(len(types)):
+    print("Doing Brian's 3-D " + types[i])
+    output = antspynet.ResampleTensorToTargetTensorLayer3D(types[i])([source, target])
+    model = Model(inputs=[source, target], outputs=output)
+    output_image = ants.from_numpy(np.squeeze(model.predict([source_array, target_array])))
+    ants.image_write(output_image, "out3D_brian_py_" + types[i] + ".nii.gz")
 
