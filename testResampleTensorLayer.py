@@ -15,7 +15,6 @@ import antspynet
 #  Test 2-D
 #
 
-
 url = "https://user-images.githubusercontent.com/22609465/36634042-4168652a-1964-11e8-90a9-2c480b97eff7.jpg"
 r = requests.get(url)
 
@@ -31,8 +30,8 @@ if not path.exists(target_file_name):
 
 f = cv2.imread(target_file_name)
 
-ft = Input(shape=(None, None, 3))
 # ft = Input(shape=f.shape)
+ft = Input(shape=(None, None, 3))
 
 shape = (700, 700)
 
@@ -55,7 +54,7 @@ brain_file = ants.get_ants_data("ch2")
 f = ants.image_read(brain_file)
 f = np.expand_dims( f.numpy(), axis=-1)
 
-shape = (200, 200, 200)
+shape = (100, 110, 120)
 ft = Input(shape=(None, None, None, 1))
 # ft = Input(shape=f.shape)
 
